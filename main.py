@@ -1,12 +1,27 @@
 import cv2
 from flask import Flask, render_template, Response
 
-video = cv2.VideoCapture(1)
+video = cv2.VideoCapture(0)
+
 
 def get_frame():
     success, frame = video.read()
-    sc, encode_image = cv2.imencode('.jpg', frame)
+    sc, encoded_image = cv2.imencode('.jpg', frame)
     frame = encoded_image.tobytes()
-    yield b'--frame\r\n Content-Type:image/jpeg\r\n\r\n' + frame + b'\r\n'
+    yield (b'--frame\r\n Content-Type:image/jpeg\r\n\r\n' + frame + b'\r\n')
+
 
 app = Flask(__name__)
+
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
+@app.route('/vide_feed_url')
+def video_feed():
+    return Response(get_frame(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+if __name__ == "__main__":
+    app.run(debug=True)
