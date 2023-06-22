@@ -11,12 +11,6 @@ def get_frame():
         frame = encoded_image.tobytes()
         yield (b'--frame\r\n Content-Type:image/jpeg\r\n\r\n' + frame + b'\r\n')
 
-def get_frame1():
-    while True:
-        success, frame = video.read()
-        sc, encoded_image = cv2.imencode('.jpg', frame)
-        frame = encoded_image.tobytes()
-        yield (b'--frame\r\n Content-Type:image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 app = Flask(__name__)
 
